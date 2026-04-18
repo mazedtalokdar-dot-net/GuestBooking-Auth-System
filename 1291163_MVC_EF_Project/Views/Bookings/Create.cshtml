@@ -1,0 +1,460 @@
+﻿@*@model _1291163_MVC_EF_Project.Models.ViewModels.BookingInputModel
+
+    @{
+        ViewBag.Title = "Create Booking";
+    }
+
+    <h2>Create Booking</h2>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @using (Html.BeginForm("Create", "Bookings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Guest</label>
+                <div class="col-md-6">
+                    @Html.DropDownListFor(m => m.GuestId, (SelectList)ViewBag.Guests, "Select Guest", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.GuestId)
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-end form-group">
+                <h4>Guest Entry (Optional)</h4>
+
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m.CreateNewGuest, new { id = "chkNewGuest" })
+                        Register new guest from this page
+                    </label>
+                </div>
+
+                <div id="newGuestBox" style="display:none;">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Full Name</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.NewGuestFullName, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Phone</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.NewGuestPhone, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Email</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.NewGuestEmail, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Address</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.NewGuestAddress, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Photo</label>
+                        <div class="col-md-6">
+                            <input type="file" name="NewGuestPhoto" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Check In</label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.CheckInDate, "{0:yyyy-MM-dd}",
+                        new { @class = "form-control", type = "date", min = DateTime.Today.ToString("yyyy-MM-dd") })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Check Out</label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.CheckOutDate, "{0:yyyy-MM-dd}",
+                        new { @class = "form-control", type = "date", min = DateTime.Today.ToString("yyyy-MM-dd") })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Notes</label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <hr />
+
+            <h4>Booked Rooms</h4>
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" id="btnAddRoom" class="btn btn-info btn-s">Add Room</button>
+            </div>
+            <table class="table table-bordered" id="roomsTable">
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Nights</th>
+                        <th>Price/Night</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Rooms.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DropDownListFor(m => m.Rooms[i].RoomId, (SelectList)ViewBag.Rooms, "Select Room", new { @class = "form-control" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Rooms[i].Nights, new { @class = "form-control" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Rooms[i].PricePerNight, new { @class = "form-control" })
+                            </td>
+                            <td>
+                                <input type="text" class="form-control totalBox" readonly />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm btnRemoveRow">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <table style="display:none;">
+                <tbody>
+                    <tr id="roomRowTemplate">
+                        <td>
+                            <select class="form-control roomDdl"></select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control nightsBox" value="1" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control priceBox" value="0" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control totalBox" readonly value="0.00" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm btnRemoveRow">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="form-group mb-2">
+
+                <button type="submit" name="act" value="insert" class="btn btn-success">
+                    Save Booking
+                </button>
+
+                @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    }*@
+
+
+@model _1291163_MVC_EF_Project.Models.ViewModels.BookingInputModel
+
+    @{
+        ViewBag.Title = "Create Booking";
+    }
+
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary"><i class="bi bi-calendar-check"></i> Create New Booking</h2>
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline-secondary" })
+        </div>
+
+        @using (Html.BeginForm("Create", "Bookings", FormMethod.Post, new { enctype = "multipart/form-data", id = "bookingForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 text-secondary">Guest Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Existing Guest</label>
+                                @Html.DropDownListFor(m => m.GuestId, (SelectList)ViewBag.Guests, "Select Guest", new { @class = "form-select select2-enable" })
+                                @Html.ValidationMessageFor(m => m.GuestId, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="form-check form-switch mb-3">
+                                @Html.CheckBoxFor(m => m.CreateNewGuest, new { @class = "form-check-input", id = "chkNewGuest" })
+                                <label class="form-check-label fw-bold text-primary" for="chkNewGuest">Register a new guest?</label>
+                            </div>
+
+                            <div id="newGuestBox" class="border rounded p-3 bg-light" style="display:none;">
+                                <div class="mb-2">
+                                    <label class="small fw-bold">Full Name</label>
+                                    @Html.TextBoxFor(m => m.NewGuestFullName, new { @class = "form-control form-control-sm" })
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <label class="small fw-bold">Phone</label>
+                                        @Html.TextBoxFor(m => m.NewGuestPhone, new { @class = "form-control form-control-sm" })
+                                    </div>
+                                    <div class="col">
+                                        <label class="small fw-bold">Email</label>
+                                        @Html.TextBoxFor(m => m.NewGuestEmail, new { @class = "form-control form-control-sm" })
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="small fw-bold">Address</label>
+                                    @Html.TextBoxFor(m => m.NewGuestAddress, new { @class = "form-control form-control-sm" })
+                                </div>
+                                <div class="mb-0">
+                                    <label class="small fw-bold">Guest Photo</label>
+                                    <input type="file" name="NewGuestPhoto" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 text-secondary">Stay Schedule & Notes</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Check-In Date</label>
+                                    @Html.TextBoxFor(m => m.CheckInDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", min = DateTime.Today.ToString("yyyy-MM-dd") })
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Check-Out Date</label>
+                                    @Html.TextBoxFor(m => m.CheckOutDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", min = DateTime.Today.ToString("yyyy-MM-dd") })
+                                </div>
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Special Requests / Notes</label>
+                                @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", rows = "2", placeholder = "Any dietary needs or late arrival?" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Selected Rooms</h5>
+                    <button type="button" id="btnAddRoom" class="btn btn-sm btn-light">
+                        <i class="bi bi-plus-circle"></i> Add Room
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="roomsTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 35%">Room Type</th>
+                                    <th style="width: 15%">Nights</th>
+                                    <th style="width: 20%">Price/Night</th>
+                                    <th style="width: 20%">Sub-Total</th>
+                                    <th style="width: 10%" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Rooms.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Rooms[i].RoomId, (SelectList)ViewBag.Rooms, "Select Room", new { @class = "form-select" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Rooms[i].Nights, new { @class = "form-control nightsBox", type = "number", min = "1" })
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                @Html.TextBoxFor(m => m.Rooms[i].PricePerNight, new { @class = "form-control priceBox" })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control-plaintext fw-bold totalBox" readonly value="0.00" />
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-danger btn-sm btnRemoveRow">
+                                                <i class="bi bi-trash">x</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-3 text-end">
+                    <button type="submit" name="act" value="insert" class="btn btn-primary btn-lg px-5 shadow">
+                        Complete Booking
+                    </button>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <table style="display:none;">
+        <tr id="roomRowTemplate">
+            <td><select class="form-select roomDdl"></select></td>
+            <td><input type="number" class="form-control nightsBox" value="1" min="1" /></td>
+            <td>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control priceBox" value="0.00" />
+                </div>
+            </td>
+            <td><input type="text" class="form-control-plaintext fw-bold totalBox" readonly value="0.00" /></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-outline-danger btn-sm btnRemoveRow"><i class="bi bi-trash">x</i></button>
+            </td>
+        </tr>
+    </table>
+
+
+@section scripts{
+    <script>
+        // Build room options from server-rendered dropdown (ViewBag.Rooms)
+        function getRoomOptionsHtml() {
+            // take first existing room dropdown options (already rendered by MVC)
+            var first = document.querySelector("select[name^='Rooms'][name$='.RoomId']");
+            return first ? first.innerHTML : "<option value=''>Select Room</option>";
+        }
+
+        function calcRowTotal(tr) {
+            var nights = parseInt(tr.querySelector("input[name$='.Nights']")?.value || "0");
+            var price = parseFloat(tr.querySelector("input[name$='.PricePerNight']")?.value || "0");
+            var totalBox = tr.querySelector(".totalBox") || tr.querySelector("input[id$='totalBox']");
+            var total = nights * price;
+            if (tr.querySelector(".totalBox")) tr.querySelector(".totalBox").value = total.toFixed(2);
+            if (totalBox && !tr.querySelector(".totalBox")) totalBox.value = total.toFixed(2);
+        }
+
+        function bindRowEvents(tr) {
+            var ddl = tr.querySelector("select[name$='.RoomId']");
+            var nightsBox = tr.querySelector("input[name$='.Nights']");
+            var priceBox = tr.querySelector("input[name$='.PricePerNight']");
+
+            if (ddl) {
+                ddl.addEventListener("change", function () {
+                    var roomId = this.value;
+                    if (!roomId) return;
+
+                    fetch('/Rooms/GetRoomPrice?id=' + roomId)
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.ok && priceBox) {
+                                priceBox.value = d.price;
+                                calcRowTotal(tr);
+                            }
+                        });
+                });
+            }
+
+            if (nightsBox) nightsBox.addEventListener("input", () => calcRowTotal(tr));
+            if (priceBox) priceBox.addEventListener("input", () => calcRowTotal(tr));
+
+            var removeBtn = tr.querySelector(".btnRemoveRow");
+            if (removeBtn) {
+                removeBtn.addEventListener("click", function () {
+                    tr.remove();
+                    reindexRows();
+                });
+            }
+
+            // initial calc
+            calcRowTotal(tr);
+        }
+
+        function reindexRows() {
+            var rows = document.querySelectorAll("#roomsTable tbody tr");
+            rows.forEach((tr, i) => {
+                // RoomId
+                var ddl = tr.querySelector("select");
+                ddl.name = `Rooms[${i}].RoomId`;
+
+                // Nights
+                var nights = tr.querySelector(".nightsBox") || tr.querySelector("input[type='text'][name$='.Nights']");
+                nights.name = `Rooms[${i}].Nights`;
+
+                // Price
+                var price = tr.querySelector(".priceBox") || tr.querySelector("input[type='text'][name$='.PricePerNight']");
+                price.name = `Rooms[${i}].PricePerNight`;
+
+                // Total box stays readonly and not posted (optional)
+            });
+            document.querySelector("form").addEventListener("submit", function () {
+                reindexRows();
+            });
+        }
+
+        function addRowClientSide() {
+            var tbody = document.querySelector("#roomsTable tbody");
+            var template = document.querySelector("#roomRowTemplate");
+            var clone = template.cloneNode(true);
+            clone.removeAttribute("id");
+            clone.style.display = "";
+
+            // fill room options
+            var ddl = clone.querySelector(".roomDdl");
+            ddl.innerHTML = getRoomOptionsHtml();
+
+            tbody.appendChild(clone);
+            reindexRows();
+            bindRowEvents(clone);
+        }
+
+        // Bind existing rows (server rendered)
+        //function bindExistingRows() {
+        //    document.querySelectorAll("#roomsTable tbody tr").forEach(tr => {
+        //        // ensure total box class exists
+        //        var total = tr.querySelector("input.totalBox");
+        //        if (!total) {
+        //            // if you already created totalBox input with class totalBox, ignore
+        //        }
+        //        // Bind remove button if present
+        //        var removeBtn = tr.querySelector(".btnRemoveRow");
+        //        if (removeBtn) bindRowEvents(tr);
+        //    });
+        function bindExistingRows() {
+            document.querySelectorAll("#roomsTable tbody tr").forEach(tr => bindRowEvents(tr));
+        }
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add button
+            document.getElementById("btnAddRoom").addEventListener("click", function () {
+                addRowClientSide();
+            });
+            reindexRows();
+            bindExistingRows();
+        });
+        //For new Guest Entry
+        document.getElementById("chkNewGuest").addEventListener("change", function () {
+            document.getElementById("newGuestBox").style.display = this.checked ? "block" : "none";
+        });
+    </script>
+}
+
+

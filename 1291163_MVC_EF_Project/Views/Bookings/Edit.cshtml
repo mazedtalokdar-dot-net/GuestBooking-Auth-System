@@ -1,0 +1,291 @@
+﻿@model _1291163_MVC_EF_Project.Models.ViewModels.BookingInputModel
+
+@{
+    ViewBag.Title = "Edit Booking (All-in-one)";
+}
+
+<h2>Edit Booking (Guest + Booking + Rooms)</h2>
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+@using (Html.BeginForm("Edit", "Bookings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.BookingId)
+    @Html.HiddenFor(m => m.GuestId)
+    @Html.HiddenFor(m => m.GuestPhotoPath)
+
+    <hr />
+    <h4>Guest Info</h4>
+
+    <div class="form-group">
+        <label>Full Name</label>
+        @Html.TextBoxFor(m => m.GuestFullName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.GuestFullName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Phone</label>
+        @Html.TextBoxFor(m => m.GuestPhone, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        @Html.TextBoxFor(m => m.GuestEmail, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Address</label>
+        @Html.TextBoxFor(m => m.GuestAddress, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Photo</label><br />
+        @if (!string.IsNullOrEmpty(Model.GuestPhotoPath))
+        {
+            <img src="@Model.GuestPhotoPath" style="height:70px;width:70px;object-fit:cover;border-radius:8px;" />
+        }
+        <input type="file" name="GuestPhotoFile" class="form-control" />
+    </div>
+
+    <hr />
+    <h4>Booking Info</h4>
+
+    <div class="form-group">
+        <label>Check In</label>
+        @Html.TextBoxFor(m => m.CheckInDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+
+    <div class="form-group">
+        <label>Check Out</label>
+        @Html.TextBoxFor(m => m.CheckOutDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        @Html.DropDownListFor(m => m.Status, (SelectList)ViewBag.Status, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Notes</label>
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+
+    <hr />
+    <h4>Booked Rooms (Details)</h4>
+
+    @*<table class="table table-bordered" id="roomsTable">*@
+    <div class="d-flex justify-content-end mb-2">
+        <button type="button" id="btnAddRoom" class="btn btn-info btn-s">Add Room</button>
+    </div>
+    <table class="table table-bordered" id="roomsTable">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Nights</th>
+                <th>Price/Night</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Rooms.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.Rooms[i].RoomId, (SelectList)ViewBag.Rooms, "Select Room", new { @class = "form-control" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Rooms[i].Nights, new { @class = "form-control" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Rooms[i].PricePerNight, new { @class = "form-control" })
+                    </td>
+                    <td>
+                        <input type="text" class="form-control totalBox" readonly />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm btnRemoveRow">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <table style="display:none;">
+        <tbody>
+            <tr id="roomRowTemplate">
+                <td>
+                    <select class="form-control roomDdl"></select>
+                </td>
+                <td>
+                    <input type="text" class="form-control nightsBox" value="1" />
+                </td>
+                <td>
+                    <input type="text" class="form-control priceBox" value="0" />
+                </td>
+                <td>
+                    <input type="text" class="form-control totalBox" readonly value="0.00" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm btnRemoveRow">Remove</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Update All</button>
+    @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-default" })
+}
+
+@section scripts{
+    <script>
+        function getRoomOptionsHtml() {
+            // take first existing room dropdown options (already rendered by MVC)
+            var first = document.querySelector("select[name^='Rooms'][name$='.RoomId']");
+            return first ? first.innerHTML : "<option value=''>Select Room</option>";
+        }
+
+        function calcRowTotal(tr) {
+            var nights = parseInt(tr.querySelector("input[name$='.Nights']")?.value || "0");
+            var price = parseFloat(tr.querySelector("input[name$='.PricePerNight']")?.value || "0");
+            var totalBox = tr.querySelector(".totalBox") || tr.querySelector("input[id$='totalBox']");
+            var total = nights * price;
+            if (tr.querySelector(".totalBox")) tr.querySelector(".totalBox").value = total.toFixed(2);
+            if (totalBox && !tr.querySelector(".totalBox")) totalBox.value = total.toFixed(2);
+        }
+
+        function bindRowEvents(tr) {
+            var ddl = tr.querySelector("select[name$='.RoomId']");
+            var nightsBox = tr.querySelector("input[name$='.Nights']");
+            var priceBox = tr.querySelector("input[name$='.PricePerNight']");
+
+            if (ddl) {
+                ddl.addEventListener("change", function () {
+                    var roomId = this.value;
+                    if (!roomId) return;
+
+                    fetch('/Rooms/GetRoomPrice?id=' + roomId)
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.ok && priceBox) {
+                                priceBox.value = d.price;
+                                calcRowTotal(tr);
+                            }
+                        });
+                });
+            }
+
+            if (nightsBox) nightsBox.addEventListener("input", () => calcRowTotal(tr));
+            if (priceBox) priceBox.addEventListener("input", () => calcRowTotal(tr));
+
+            var removeBtn = tr.querySelector(".btnRemoveRow");
+            if (removeBtn) {
+                removeBtn.addEventListener("click", function () {
+                    tr.remove();
+                    reindexRows();
+                });
+            }
+
+            // initial calc
+            calcRowTotal(tr);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("#roomsTable tbody tr").forEach(bindRemove);
+
+            document.getElementById("btnAddRoom").addEventListener("click", addRow);
+
+            document.querySelector("form").addEventListener("submit", function () {
+                reindexRows();
+            });
+        });
+        $(document).on("change", ".room-dd", function () {
+            var roomId = $(this).val();
+            var priceBox = $(this).closest("tr").find(".price");
+
+            if (!roomId) {
+                priceBox.val(0);
+                return;
+            }
+
+            $.get("/Rooms/GetPrice", { roomId: roomId }, function (price) {
+                priceBox.val(price);
+            });
+        });
+        function reindexRows() {
+            var rows = document.querySelectorAll("#roomsTable tbody tr");
+            rows.forEach((tr, i) => {
+                // RoomId
+                var ddl = tr.querySelector("select");
+                ddl.name = `Rooms[${i}].RoomId`;
+
+                // Nights
+                var nights = tr.querySelector(".nightsBox") || tr.querySelector("input[type='text'][name$='.Nights']");
+                nights.name = `Rooms[${i}].Nights`;
+
+                // Price
+                var price = tr.querySelector(".priceBox") || tr.querySelector("input[type='text'][name$='.PricePerNight']");
+                price.name = `Rooms[${i}].PricePerNight`;
+
+                // Total box stays readonly and not posted (optional)
+            });
+            document.querySelector("form").addEventListener("submit", function () {
+                reindexRows();
+            });
+        }
+
+        function addRowClientSide() {
+            var tbody = document.querySelector("#roomsTable tbody");
+            var template = document.querySelector("#roomRowTemplate");
+            var clone = template.cloneNode(true);
+            clone.removeAttribute("id");
+            clone.style.display = "";
+
+            // fill room options
+            var ddl = clone.querySelector(".roomDdl");
+            ddl.innerHTML = getRoomOptionsHtml();
+
+            tbody.appendChild(clone);
+
+            // convert template controls to MVC-postable names
+            reindexRows();
+
+            // bind events for last row
+            bindRowEvents(clone);
+        }
+
+        $("form").submit(function () {
+            reindexRows();
+        });
+        function bindExistingRows() {
+            document.querySelectorAll("#roomsTable tbody tr").forEach(tr => {
+                // ensure total box class exists
+                var total = tr.querySelector("input.totalBox");
+                if (!total) {
+                    // if you already created totalBox input with class totalBox, ignore
+                }
+                // Bind remove button if present
+                var removeBtn = tr.querySelector(".btnRemoveRow");
+                if (removeBtn) bindRowEvents(tr);
+            });
+
+            // Rebind for server-rendered rows even if remove button differs
+            document.querySelectorAll("#roomsTable tbody tr").forEach(tr => bindRowEvents(tr));
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add button
+            document.getElementById("btnAddRoom").addEventListener("click", function () {
+                addRowClientSide();
+            });
+
+            // Make sure existing rows are indexed properly (important)
+            reindexRows();
+            bindExistingRows();
+        });
+        //For new Guest Entry
+        document.getElementById("chkNewGuest").addEventListener("change", function () {
+            document.getElementById("newGuestBox").style.display = this.checked ? "block" : "none";
+        });
+
+    </script>
+}
+

@@ -1,0 +1,63 @@
+﻿@model _1291163_MVC_EF_Project.Models.Room
+
+@{
+    ViewBag.Title = "Create Room";
+}
+
+<h2>Create Room</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.RoomNo, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.RoomNo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.RoomNo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Capacity, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Capacity, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Capacity)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PricePerNight, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.PricePerNight, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PricePerNight)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Room Type", new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.RoomTypeId, (SelectList)ViewBag.RoomTypes, "Select Type", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Room Category", new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.RoomCategoryId, (SelectList)ViewBag.RoomCategories, "Select Category", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-6">
+                <input type="submit" value="Save" class="btn btn-success" />
+                @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
+
+

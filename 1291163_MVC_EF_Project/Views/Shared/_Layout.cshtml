@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark"
+         style="background: linear-gradient(90deg, #1d2671, #c33764);">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@Url.Action("Index","Home")">
+                Room<sup style="font-size:11px;">Mate</sup>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-sm-end">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Guest Info", "Index", "Guests", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Booking Info", "Index", "Bookings", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <footer class="container-fluid text-center py-3"
+            style="background: linear-gradient(90deg, #1d2671, #c33764); color: #fff;">
+        <p class="mb-1">
+            &copy; @DateTime.Now.Year — <strong>Room<sup style="font-size:11px;">Mate</sup></strong>
+        </p>
+        <small class="footer-signature">Developed by Abdul Mazed | ASP.NET MVC Project</small>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

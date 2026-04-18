@@ -1,0 +1,33 @@
+﻿@model IEnumerable<_1291163_MVC_EF_Project.Models.Room>
+
+@{
+    ViewBag.Title = "Rooms";
+}
+
+<h2>Rooms</h2>
+
+<p>
+    @Html.ActionLink("Create Room", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Room No</th>
+            <th>Capacity</th>
+            <th>Price/Night</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoomNo</td>
+                <td>@item.Capacity</td>
+                <td>@item.PricePerNight</td>
+                <td>@item.IsActive</td>
+            </tr>
+        }
+    </tbody>
+</table>

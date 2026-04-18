@@ -1,0 +1,103 @@
+﻿@model IEnumerable<_1291163_MVC_EF_Project.Models.Booking>
+
+@{
+    ViewBag.Title = "Bookings";
+}
+
+<h2>Bookings</h2>
+
+<p>
+    @Html.ActionLink("Create Booking", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Guest</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Status</th>
+            <th>Photo</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var b in Model)
+        {
+            <tr class="mainRow" data-id="@b.BookingId">
+                <td>
+                    <a href="javascript:void(0)" class="toggleDetails" data-id="@b.BookingId" title="Show details">
+                        <span class="chev">▼</span>
+                        @b.BookingId
+                    </a>
+                </td>
+                <td>@b.Guest.FullName</td>
+                <td>@b.CheckInDate.ToString("yyyy-MM-dd")</td>
+                <td>@b.CheckOutDate.ToString("yyyy-MM-dd")</td>
+                <td>@b.Status</td>
+
+                <td>
+                    @if (!string.IsNullOrEmpty(b.Guest.PhotoPath))
+                    {
+                        <img src="@b.Guest.PhotoPath" style="height:50px;width:50px;object-fit:cover;border-radius:6px;" />
+                    }
+                    else
+                    { <span>N/A</span>}
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = b.BookingId }, new { @class = "btn btn-warning btn-sm" })
+                    @Html.ActionLink("Delete", "Delete", new { id = b.BookingId }, new { @class = "btn btn-danger btn-sm" })
+
+                </td>
+            </tr>
+
+            <tr class="detailsRow" id="detailsRow_@b.BookingId" style="display:none;">
+                <td colspan="7">
+                    <div class="detailsContainer" id="detailsContainer_@b.BookingId"></div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".toggleDetails").forEach(function (a) {
+            a.addEventListener("click", function () {
+                var id = this.getAttribute("data-id");
+                var row = document.getElementById("detailsRow_" + id);
+                var box = document.getElementById("detailsContainer_" + id);
+                var chev = this.querySelector(".chev");
+
+                // toggle close
+                if (row.style.display !== "none") {
+                    row.style.display = "none";
+                    if (chev) chev.textContent = "▼";
+                    return;
+                }
+
+                row.style.display = "";
+                if (chev) chev.textContent = "▲";
+
+                // load only first time
+                if (box.getAttribute("data-loaded") === "1") return;
+
+                box.innerHTML = "Loading...";
+                fetch("/Bookings/RowDetails?id=" + id, { method: "GET" })
+                    .then(r => r.text())
+                    .then(html => {
+                        box.innerHTML = html;
+                        box.setAttribute("data-loaded", "1");
+                    })
+                    .catch(() => box.innerHTML = "Failed to load details.");
+            });
+        });
+
+    });
+    </script>
+}
+

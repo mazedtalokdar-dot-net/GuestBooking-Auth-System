@@ -1,0 +1,53 @@
+﻿@model _1291163_MVC_EF_Project.Models.Guest
+
+@{
+    ViewBag.Title = "Edit Guest";
+}
+
+<h2>Edit Guest</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.GuestId)
+
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.FullName, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.FullName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Phone, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Address, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-6">
+                <input type="submit" value="Update" class="btn btn-success" />
+                @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}

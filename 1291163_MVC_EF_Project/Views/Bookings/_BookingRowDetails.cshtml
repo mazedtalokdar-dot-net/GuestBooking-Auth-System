@@ -1,0 +1,65 @@
+﻿@model _1291163_MVC_EF_Project.Models.Booking
+@using _1291163_MVC_EF_Project.Models
+@{
+    var details = ViewBag.Details as List<BookedRoom>;
+    decimal grand = 0;
+}
+
+<div class="panel panel-default" style="margin:0;">
+    <div class="panel-heading"><b>Booking Details</b></div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-8">
+                <p><b>Guest:</b> @Model.Guest.FullName (@Model.Guest.Phone)</p>
+                <p><b>Check In:</b> @Model.CheckInDate.ToString("yyyy-MM-dd")</p>
+                <p><b>Check Out:</b> @Model.CheckOutDate.ToString("yyyy-MM-dd")</p>
+                <p><b>Status:</b> @Model.Status</p>
+                <p><b>Notes:</b> @Model.Notes</p>
+            </div>
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.Guest.PhotoPath))
+                {
+                    <img src="@Model.Guest.PhotoPath" style="height:90px;width:90px;object-fit:cover;border-radius:8px;" />
+                }
+            </div>
+        </div>
+
+        <hr />
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Nights</th>
+                    <th>Price/Night</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (details != null && details.Count > 0)
+                {
+                    foreach (var d in details)
+                    {
+                        var rowTotal = d.Nights * d.PricePerNight;
+                        grand += rowTotal;
+                        <tr>
+                            <td>@d.Room.RoomNo</td>
+                            <td>@d.Nights</td>
+                            <td>@d.PricePerNight</td>
+                            <td>@rowTotal</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="3" style="text-align:right;"><b>Grand Total</b></td>
+                        <td><b>@grand</b></td>
+                    </tr>
+                }
+                else
+                {
+                    <tr><td colspan="4">No room details found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

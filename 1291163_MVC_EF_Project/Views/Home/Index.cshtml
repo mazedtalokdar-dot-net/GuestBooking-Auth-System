@@ -1,0 +1,222 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+
+<style>
+    .hero-wrap {
+        background: linear-gradient(135deg, #2b1055 0%, #b83280 55%, #ff6a3d 100%);
+        border-radius: 18px;
+        color: #fff;
+        padding: 50px 30px;
+        box-shadow: 0 12px 30px rgba(0,0,0,.18);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-wrap::before {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -120px;
+        width: 280px;
+        height: 280px;
+        background: rgba(255,255,255,.12);
+        border-radius: 50%;
+        filter: blur(1px);
+    }
+
+    .hero-wrap::after {
+        content: "";
+        position: absolute;
+        bottom: -140px;
+        left: -140px;
+        width: 320px;
+        height: 320px;
+        background: rgba(255,255,255,.10);
+        border-radius: 50%;
+        filter: blur(1px);
+    }
+
+    .hero-title {
+        font-weight: 800;
+        letter-spacing: .3px;
+        margin-bottom: 10px;
+        font-size: 42px;
+        line-height: 1.2;
+    }
+
+    .hero-sub {
+        font-size: 16px;
+        opacity: .95;
+        max-width: 650px;
+        line-height: 1.7;
+    }
+
+    .hero-badges span {
+        display: inline-block;
+        margin: 6px 8px 0 0;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.18);
+        font-size: 13px;
+    }
+
+    .glass-card {
+        background: rgba(255,255,255,.95);
+        border-radius: 16px;
+        border: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 10px 22px rgba(0,0,0,.10);
+        padding: 18px 18px;
+        height: 100%;
+    }
+
+    .glass-card h4 {
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .tiny-muted {
+        color: #6c757d;
+        font-size: 13px;
+        margin-bottom: 0;
+    }
+
+    .soft-divider {
+        height: 1px;
+        background: rgba(255,255,255,.18);
+        margin: 18px 0;
+    }
+
+    .cta-box {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 22px 18px;
+        border: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 10px 22px rgba(0,0,0,.08);
+    }
+
+    .cta-title {
+        font-weight: 800;
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+</style>
+
+<main class="container" style="margin-top:25px;">
+
+    <!-- HERO -->
+    <section class="hero-wrap">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="hero-badges mb-2">
+                    <span>✅ MVC5 + EF (Code First)</span>
+                    <span>✅ Stored Procedure</span>
+                    <span>✅ Master–Details CRUD</span>
+                    <span>✅ Authentication & Roles</span>
+                </div>
+
+                <h1 class="hero-title">RoomMate — Hotel Booking System</h1>
+                <p class="hero-sub">
+                    Manage guests, rooms, and bookings with a clean and modern dashboard experience.
+                    Built with ASP.NET MVC5, Entity Framework Code First, Transaction support, and Stored Procedures.
+                </p>
+
+                <div class="soft-divider"></div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                        <a href="/Bookings/Create" class="btn btn-outline-light btn-lg" style="font-weight:700;">Create Booking</a>
+
+                    <a href="/Bookings" class="btn btn-outline-light btn-lg" style="font-weight:700;">
+                        View Bookings
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="cta-box">
+                    <div class="cta-title">Quick Actions</div>
+                    <p class="tiny-muted">Go where you need fastest.</p>
+
+                    <div class="mt-3 d-grid gap-2">
+                        <a href="/Guests/Create" class="btn btn-primary">+ Add Guest</a>
+                        <a href="/Rooms/Create" class="btn btn-dark">+ Add Room</a>
+                        <a href="/Guests" class="btn btn-outline-secondary">Guest List</a>
+                        <a href="/Rooms" class="btn btn-outline-secondary">Room List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="row mt-4 g-3">
+        <div class="col-md-4">
+            <div class="glass-card">
+                <h4>Booking Control</h4>
+                <p class="tiny-muted">Create and manage bookings with master–details rooms.</p>
+                <a class="btn btn-sm btn-outline-primary mt-2" href="/Bookings">Open Booking Info</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card">
+                <h4>Guest Management</h4>
+                <p class="tiny-muted">Maintain guest profiles with photo, contact, and address.</p>
+                <a class="btn btn-sm btn-outline-primary mt-2" href="/Guests">Open Guest Info</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card">
+                <h4>Room Inventory</h4>
+                <p class="tiny-muted">Store active rooms, capacity, and per-night pricing.</p>
+                <a class="btn btn-sm btn-outline-primary mt-2" href="/Rooms">Open Rooms</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="row mt-4 g-3">
+        <div class="col-md-6">
+            <div class="glass-card">
+                <h4>Technology Highlights</h4>
+                <ul class="mb-0 tiny-muted" style="line-height:1.8;">
+                    <li>Entity Framework (Code First) Database Design</li>
+                    <li>Async CRUD operations</li>
+                    <li>Stored Procedure Insert/Delete for details</li>
+                    <li>Transaction (Rollback on failure)</li>
+                    <li>Login System + Role-based Authorization</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="glass-card">
+                <h4>Why This Project is Consultant-Ready?</h4>
+                <ul class="mb-0 tiny-muted" style="line-height:1.8;">
+                    <li>Master–Details UI for booking rooms</li>
+                    <li>Guest image upload + display</li>
+                    <li>Expandable details view</li>
+                    <li>Clean separation: Model, ViewModel, Controller</li>
+                    <li>Easy to extend: availability check, reports</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOT CTA -->
+    <section class="mt-4 mb-5">
+        <div class="glass-card d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h4 class="mb-1">Ready to create your first booking?</h4>
+                <p class="tiny-muted mb-0">Start from the booking page and add rooms dynamically.</p>
+            </div>
+            <div>
+                <a href="/Bookings/Create" class="btn btn-success btn-lg" style="font-weight:700;">Create Booking</a>
+            </div>
+        </div>
+    </section>
+
+</main>

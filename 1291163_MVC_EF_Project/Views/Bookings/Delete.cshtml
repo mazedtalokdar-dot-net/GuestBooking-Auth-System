@@ -1,0 +1,66 @@
+﻿@model _1291163_MVC_EF_Project.Models.Booking
+@using _1291163_MVC_EF_Project.Models
+@{
+    ViewBag.Title = "Delete Booking";
+    var details = ViewBag.Details as List<BookedRoom>;
+}
+
+<h2>Delete Booking</h2>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete this booking?
+</div>
+
+<dl class="dl-horizontal">
+    <dt>Booking ID</dt>
+    <dd>@Model.BookingId</dd>
+
+    <dt>Guest</dt>
+    <dd>@Model.Guest.FullName</dd>
+
+    <dt>Check In</dt>
+    <dd>@Model.CheckInDate.ToString("yyyy-MM-dd")</dd>
+
+    <dt>Check Out</dt>
+    <dd>@Model.CheckOutDate.ToString("yyyy-MM-dd")</dd>
+
+    <dt>Status</dt>
+    <dd>@Model.Status</dd>
+</dl>
+
+<h4>Booked Rooms</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Room</th>
+            <th>Nights</th>
+            <th>Price/Night</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (details != null && details.Count > 0)
+        {
+            foreach (var d in details)
+            {
+                <tr>
+                    <td>@d.Room.RoomNo</td>
+                    <td>@d.Nights</td>
+                    <td>@d.PricePerNight</td>
+                    <td>@(d.Nights * d.PricePerNight)</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="4">No details found.</td></tr>
+        }
+    </tbody>
+</table>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+}
