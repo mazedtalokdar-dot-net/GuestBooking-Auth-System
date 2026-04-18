@@ -44,10 +44,10 @@ Since this is a Code First project, follow these steps to generate the database:
 5.To login as Admin
 <br>
 Use this Data
-<b>UserName</b>
-<p>adminEmail = "admin@hotel.com"</p>
-<b>Password</b>
-<p>password = "Admin@123"</p>
+
+<p><b>UserName</b> = "admin@hotel.com"</p>
+
+<p><b>Password</b> = "Admin@123"</p>
 
 
    
